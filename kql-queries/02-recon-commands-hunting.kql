@@ -1,0 +1,17 @@
+// =============================================================================
+// Query:        Discovery / Reconnaissance Command Execution
+// Data source:  DeviceProcessEvents
+// Platform:     Microsoft Defender Advanced Hunting
+// Purpose:      Detect built-in Windows recon utilities commonly executed by
+//               an attacker immediately after gaining a foothold
+//               (maps to MITRE ATT&CK T1082 - System Information Discovery,
+//               T1033 - System Owner/User Discovery).
+// Result:       16 events showing whoami.exe / hostname.exe / net.exe spawned
+//               from powershell.exe under the "azureadmin" account shortly
+//               after the successful RDP logon.
+// =============================================================================
+DeviceProcessEvents
+| where DeviceName contains "vm-honeypot"
+| where FileName in~ ("whoami.exe", "systeminfo.exe", "net.exe", "hostname.exe", "nltest.exe")
+| project Timestamp, AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName
+| order by Timestamp desc

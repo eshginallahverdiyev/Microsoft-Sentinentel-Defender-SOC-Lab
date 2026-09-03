@@ -1,0 +1,19 @@
+// =============================================================================
+// Query:        Suspicious PowerShell Execution (Download / Bypass / Hidden)
+// Data source:  DeviceProcessEvents
+// Platform:     Microsoft Defender Advanced Hunting
+// Purpose:      Hunt for PowerShell command lines containing common
+//               offensive-tooling indicators: in-memory download cradles,
+//               execution policy bypass, and hidden window flags.
+//               Maps to MITRE ATT&CK T1059.001 - PowerShell,
+//               T1027 - Obfuscated Files or Information.
+// Result:       13 matching events, including a download-and-execute cradle
+//               (IEX / DownloadString) and an Invoke-MalDoc macro simulation
+//               triggered by Atomic Red Team.
+// =============================================================================
+DeviceProcessEvents
+| where DeviceName contains "vm-honeypot"
+| where FileName in~ ("powershell.exe", "pwsh.exe")
+| where ProcessCommandLine has_any ("IEX", "DownloadString", "Invoke-Expression", "Bypass", "hidden")
+| project Timestamp, AccountName, ProcessCommandLine
+| order by Timestamp desc

@@ -1,0 +1,18 @@
+// =============================================================================
+// Query:        Outbound Network Connections from Honeypot
+// Data source:  DeviceNetworkEvents
+// Platform:     Microsoft Defender Advanced Hunting
+// Purpose:      Review outbound connections initiated by the honeypot VM in
+//               the two hours following compromise, to spot payload
+//               downloads / staging infrastructure.
+//               Maps to MITRE ATT&CK T1071 - Application Layer Protocol,
+//               T1105 - Ingress Tool Transfer.
+// Result:       280 connection events, including outbound HTTPS traffic from
+//               powershell.exe to a GitHub raw-content host - consistent
+//               with a download-cradle style payload retrieval.
+// =============================================================================
+DeviceNetworkEvents
+| where DeviceName contains "vm-honeypot"
+| where Timestamp > ago(2h)
+| project Timestamp, RemoteIP, RemoteUrl, RemotePort, InitiatingProcessFileName
+| order by Timestamp desc

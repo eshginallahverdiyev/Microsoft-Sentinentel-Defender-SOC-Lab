@@ -1,0 +1,18 @@
+// =============================================================================
+// Query:        Full Attack Timeline Correlation
+// Data source:  DeviceLogonEvents, DeviceProcessEvents, DeviceNetworkEvents
+// Platform:     Microsoft Defender Advanced Hunting
+// Purpose:      Stitch logon, process, and network telemetry for the honeypot
+//               into a single chronological timeline - the core technique
+//               used to reconstruct the end-to-end attack story for the
+//               incident write-up (initial access -> discovery ->
+//               execution -> credential access -> outbound connection).
+// Result:       570 correlated events across the three tables, ordered
+//               ascending to read as a narrative from first compromise
+//               to post-exploitation activity.
+// =============================================================================
+union DeviceLogonEvents, DeviceProcessEvents, DeviceNetworkEvents
+| where DeviceName contains "vm-honeypot"
+| where Timestamp > ago(2h)
+| project Timestamp, ActionType, AccountName, FileName, ProcessCommandLine, RemoteIP
+| order by Timestamp asc
