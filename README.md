@@ -178,4 +178,4 @@ A step-by-step build guide is documented in **[`docs/02-infrastructure-deploymen
 
 Eshgin Allahverdiyev — SOC Analyst focused on blue team / defensive security, based in Baku, Azerbaijan. This lab was built alongside a Microsoft-tooling cybersecurity internship (Solvas) to strengthen hands-on detection and incident response skills.
 
-[LinkedIn](#) · [Email](#)
+[LinkedIn](https://www.linkedin.com/in/eshginallahverdiyev/)
